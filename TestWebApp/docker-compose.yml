@@ -1,0 +1,15 @@
+﻿version: "3.6"
+services:
+  rabbitmq:
+    image: masstransit/rabbitmq:latest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  server:
+    image: server/directserver
+    build:
+      dockerfile: Server/Dockerfile
+  client:
+    image: client/directclient
+    build:
+      dockerfile: Client/Dockerfile
