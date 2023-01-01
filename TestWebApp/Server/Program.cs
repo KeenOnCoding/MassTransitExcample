@@ -27,7 +27,12 @@ builder.Services.AddMassTransit(x =>
     });
 });
 
-builder.Services.AddMassTransitHostedService(true);
+//builder.Services.AddMassTransitHostedService(true);
+builder.Services.AddOptions<MassTransitHostOptions>()
+                .Configure(options =>
+                {
+                    options.WaitUntilStarted = true;
+                });
 
 var app = builder.Build();
 

@@ -1,7 +1,9 @@
 using Client;
+using Client.Handlers;
 using Contracts;
 using MassTransit;
 using System.Reflection;
+using static MassTransit.Monitoring.Performance.BuiltInCounters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,28 +25,29 @@ builder.Services.AddMassTransit(x =>
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host("rabbitmq", "/");
-
-
         cfg.ConfigureEndpoints(context);
     });
 });
+builder.Services.AddMediator(x => x.AddConsumersFromNamespaceContaining<Handlers>());
 
-builder.Services.AddHostedService<StartupService>();
+//builder.Services.AddHostedService<StartupService>();
 
-builder.Services.AddMassTransitHostedService(true);
+//builder.Services.AddMassTransitHostedService(true);
+builder.Services.AddOptions<MassTransitHostOptions>()
+                .Configure(options =>
+                {
+                    options.WaitUntilStarted = true;
+                });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
-
-//app.UseAuthorization();
+app.UseHttpsRedirection();
 
 app.MapControllers();
 

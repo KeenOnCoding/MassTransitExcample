@@ -1,7 +1,7 @@
 ﻿namespace Contracts
 {
-    public interface Order
+    public class Order
     {
-        string Greeting { get; }
+        public string Greeting { get; set; }
     }
 }
